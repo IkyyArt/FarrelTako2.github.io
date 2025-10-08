@@ -159,8 +159,8 @@
       }
 
       .quantity-btn {
-        width: 30px;
-        height: 30px;
+        width: 35px;
+        height: 35px;
         border-radius: 50%;
         border: 1px solid #ddd;
         background-color: white;
@@ -169,16 +169,19 @@
         justify-content: center;
         cursor: pointer;
         transition: all 0.2s ease;
+        font-weight: bold;
       }
 
       .quantity-btn:hover {
         background-color: #f5f5f5;
+        border-color: var(--primary-color);
       }
 
       .quantity-btn:disabled {
         background-color: #f5f5f5;
         cursor: not-allowed;
         color: #aaa;
+        border-color: #ddd;
       }
 
       .quantity-input {
@@ -188,6 +191,7 @@
         border-radius: 5px;
         margin: 0 10px;
         padding: 5px;
+        font-weight: bold;
       }
 
       .cart-sidebar {
@@ -354,6 +358,93 @@
         animation-delay: 0.6s;
       }
 
+      /* Notifikasi jam operasional */
+      .operating-hours-notification {
+        position: fixed;
+        top: 80px;
+        left: 0;
+        right: 0;
+        z-index: 1030;
+        padding: 15px;
+        text-align: center;
+        font-weight: 600;
+        animation: slideDown 0.5s ease forwards;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .operating-hours-notification.open {
+        display: block;
+      }
+
+      .operating-hours-notification.closed {
+        background-color: #e74c3c;
+        color: white;
+      }
+
+      .operating-hours-notification.open-soon {
+        background-color: #f39c12;
+        color: white;
+      }
+
+      .operating-hours-notification.open-now {
+        background-color: #2ecc71;
+        color: white;
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* Overlay untuk menu saat tutup */
+      .menu-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        z-index: 10;
+      }
+
+      .menu-overlay-content {
+        text-align: center;
+        padding: 20px;
+      }
+
+      /* Shipping method styles */
+      .shipping-method {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .shipping-method:hover {
+        border-color: var(--primary-color);
+      }
+
+      .shipping-method.selected {
+        border-color: var(--primary-color);
+        background-color: #fff9f5;
+      }
+
+      .shipping-method .form-check-input {
+        margin-top: 0.3rem;
+      }
+
       /* Responsif */
       @media (max-width: 768px) {
         .cart-sidebar {
@@ -364,10 +455,21 @@
         .hero-section {
           padding: 100px 0;
         }
+
+        .operating-hours-notification {
+          top: 70px;
+          font-size: 0.9rem;
+          padding: 10px;
+        }
       }
     </style>
   </head>
   <body>
+    <!-- Notifikasi Jam Operasional -->
+    <div id="operating-hours-notification" class="operating-hours-notification">
+      <!-- Konten akan diisi oleh JavaScript -->
+    </div>
+
     <!-- Navbar -->
     <nav
       class="navbar navbar-expand-lg navbar-light bg-light fixed-top shadow-sm"
@@ -449,13 +551,26 @@
         <div class="row g-4">
           <!-- Menu Item 1 -->
           <div class="col-md-6 col-lg-4 fade-in-up">
-            <div class="card food-card h-100">
+            <div class="card food-card h-100 position-relative">
+              <!-- Overlay untuk menu saat tutup -->
+              <div
+                class="menu-overlay"
+                id="menu-overlay-1"
+                style="display: none"
+              >
+                <div class="menu-overlay-content">
+                  <i class="fas fa-clock fa-3x mb-3 text-muted"></i>
+                  <h5 class="text-muted">Menu Belum Tersedia</h5>
+                  <p class="text-muted">Order jam 16.00 - 18.00 WIB</p>
+                </div>
+              </div>
+
               <img
                 src="TAKOYAKI.png"
                 class="card-img-top food-img"
-                alt="Nasi Goreng Spesial"
+                alt="Takoyaki"
               />
-              <span class="price-tag">Rp 7.000</span>
+              <span class="price-tag">Rp 8.000</span>
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title">Takoyaki</h5>
                 <p class="card-text flex-grow-1">
@@ -479,7 +594,7 @@
                   class="btn order-btn add-to-cart"
                   data-id="1"
                   data-name="Takoyaki"
-                  data-price="7000"
+                  data-price="8000"
                   disabled
                 >
                   <i class="fas fa-cart-plus me-2"></i>Tambahkan
@@ -487,8 +602,7 @@
               </div>
             </div>
           </div>
-
-          <!-- Menu Item 2 -->
+          <!-- PEMBATAS MENU ITEM-->
         </div>
       </div>
     </section>
@@ -561,7 +675,7 @@
                   style="color: var(--primary-color)"
                 ></i>
                 <h5 class="card-title">Telepon</h5>
-                <p class="card-text">(024) -<br />0881336549669</p>
+                <p class="card-text">0881336549669</p>
               </div>
             </div>
           </div>
@@ -574,7 +688,7 @@
                   style="color: var(--primary-color)"
                 ></i>
                 <h5 class="card-title">Jam Operasional</h5>
-                <p class="card-text">Senin - Jumat<br />20.00 - 04:30 WIB</p>
+                <p class="card-text">Senin - Jumat<br />16.00 - 18:00 WIB</p>
               </div>
             </div>
           </div>
@@ -623,7 +737,7 @@
             <h5 class="mb-3">Pesan Sekarang</h5>
             <p>Pesan makanan favorit Anda melalui WhatsApp</p>
             <a
-              href="https://wa.me/6281336549669?text=Halo%20Pawon%20Uti,%20saya%20ingin%20memesan%20makanan"
+              href="https://wa.me/6281336549669?text=Halo%20Farrel%20Tako,%20saya%20ingin%20memesan%20makanan"
               class="btn whatsapp-btn"
               target="_blank"
             >
@@ -656,15 +770,15 @@
 
         <!-- Form untuk WhatsApp Order -->
         <div id="wa-form">
-          <h5>ORDER: 20.00 - 04.30 WIB</h5>
           <h5 class="mb-3">Informasi Pemesanan:</h5>
+
           <div class="store-info">
             <h6><i class="fas fa-store me-2"></i>Informasi Pengambilan</h6>
             <p class="mb-1">
-              <strong>Alamat Farrel Tako (Jam 6 Ready):</strong>
+              <strong>Alamat Farrel Tako:</strong>
             </p>
             <p class="mb-2">
-              SMA Teuku Umar, jalan karangrejo IX no.99 Semarang Central Java
+              Jl. Kagok Dalam 2 No. 33 Rt 03 Rw 06, Semarang Jawa Tengah, 50525
             </p>
             <p class="mb-0">
               <small
@@ -696,6 +810,66 @@
               required
             />
           </div>
+
+          <!-- Pilihan Metode Pengiriman -->
+          <div class="mb-3">
+            <label class="form-label">Metode Pengiriman *</label>
+            <div class="shipping-method" id="pickup-method">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="shippingMethod"
+                  id="pickup"
+                  value="pickup"
+                  checked
+                />
+                <label class="form-check-label fw-bold" for="pickup">
+                  <i class="fas fa-store me-2"></i>Ambil di Tempat
+                </label>
+                <p class="mb-0 mt-1 text-muted small">
+                  Pesanan dapat diambil langsung di toko Farrel Tako
+                </p>
+              </div>
+            </div>
+            <div class="shipping-method" id="delivery-method">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  name="shippingMethod"
+                  id="delivery"
+                  value="delivery"
+                />
+                <label class="form-check-label fw-bold" for="delivery">
+                  <i class="fas fa-motorcycle me-2"></i>Antar ke Alamat
+                </label>
+                <p class="mb-0 mt-1 text-muted small">
+                  Pesanan akan diantar ke alamat yang Anda tentukan
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Alamat Pengiriman (Awalnya Disembunyikan) -->
+          <div id="delivery-address" class="mb-3" style="display: none">
+            <label for="customer-address" class="form-label"
+              >Alamat Lengkap Pengiriman *</label
+            >
+            <textarea
+              class="form-control"
+              id="customer-address"
+              rows="3"
+              placeholder="Masukkan alamat lengkap untuk pengiriman (jalan, RT/RW, kelurahan, kecamatan, kode pos)"
+            ></textarea>
+            <div class="mt-2">
+              <small class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                Pastikan alamat lengkap dan jelas untuk memudahkan pengiriman
+              </small>
+            </div>
+          </div>
+
           <div class="mb-3">
             <label for="customer-note" class="form-label"
               >Catatan Pesanan (opsional)</label
@@ -731,6 +905,156 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+      // Fungsi untuk mengecek apakah toko sedang buka
+      function isStoreOpen() {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        // Jam operasional: 16.00 - 18.00 WIB
+        const openHour = 16; // 16.00 WIB
+        const closeHour = 18; // 18.00 WIB
+
+        // Cek apakah waktu saat ini dalam jam operasional
+        if (currentHour >= openHour && currentHour < closeHour) {
+          return true;
+        }
+
+        return false;
+      }
+
+      // Fungsi untuk menampilkan notifikasi jam operasional
+      function showOperatingHoursNotification() {
+        const notification = document.getElementById(
+          "operating-hours-notification"
+        );
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        // Jam operasional: 16.00 - 18.00 WIB
+        const openHour = 16; // 16.00 WIB
+        const closeHour = 18; // 18.00 WIB
+
+        let message = "";
+        let status = "";
+
+        // Logika untuk menentukan status toko
+        if (currentHour >= openHour && currentHour < closeHour) {
+          // Toko buka (16.00 - 18.00)
+          status = "open-now";
+          message = `✅ Farrel Tako sedang BUKA. Order jam ${currentHour}.${currentMinute
+            .toString()
+            .padStart(2, "0")} - 18.00 WIB`;
+        } else {
+          // Toko tutup
+          status = "closed";
+          message = `❌ Farrel Tako sedang TUTUP. Order jam 16.00 - 18.00 WIB`;
+        }
+
+        // Update notifikasi
+        notification.textContent = message;
+        notification.className = `operating-hours-notification ${status}`;
+      }
+
+      // Fungsi untuk mengatur status menu berdasarkan jam operasional
+      function updateMenuStatus() {
+        const isOpen = isStoreOpen();
+
+        // Update semua tombol tambah ke keranjang
+        document.querySelectorAll(".add-to-cart").forEach((button) => {
+          const id = button.getAttribute("data-id");
+          const quantity = parseInt(
+            document.getElementById(`quantity-${id}`).value
+          );
+
+          if (isOpen && quantity > 0) {
+            button.disabled = false;
+          } else {
+            button.disabled = true;
+          }
+        });
+
+        // Update overlay pada menu
+        document.querySelectorAll(".menu-overlay").forEach((overlay) => {
+          if (isOpen) {
+            overlay.style.display = "none";
+          } else {
+            overlay.style.display = "flex";
+          }
+        });
+
+        // Update tombol quantity
+        document.querySelectorAll(".quantity-btn.plus").forEach((button) => {
+          if (isOpen) {
+            button.disabled = false;
+          } else {
+            button.disabled = true;
+          }
+        });
+      }
+
+      // Panggil fungsi saat halaman dimuat
+      document.addEventListener("DOMContentLoaded", function () {
+        showOperatingHoursNotification();
+        updateMenuStatus();
+
+        // Update notifikasi dan status menu setiap menit
+        setInterval(function () {
+          showOperatingHoursNotification();
+          updateMenuStatus();
+        }, 60000);
+
+        // Setup shipping method selection
+        setupShippingMethods();
+      });
+
+      // Setup shipping method selection
+      function setupShippingMethods() {
+        const pickupMethod = document.getElementById("pickup-method");
+        const deliveryMethod = document.getElementById("delivery-method");
+        const deliveryAddress = document.getElementById("delivery-address");
+        const pickupRadio = document.getElementById("pickup");
+        const deliveryRadio = document.getElementById("delivery");
+
+        // Add click event to shipping method cards
+        pickupMethod.addEventListener("click", function () {
+          pickupRadio.checked = true;
+          updateShippingMethodSelection();
+        });
+
+        deliveryMethod.addEventListener("click", function () {
+          deliveryRadio.checked = true;
+          updateShippingMethodSelection();
+        });
+
+        // Update selection when radio buttons change
+        pickupRadio.addEventListener("change", updateShippingMethodSelection);
+        deliveryRadio.addEventListener("change", updateShippingMethodSelection);
+
+        // Initial update
+        updateShippingMethodSelection();
+      }
+
+      // Update shipping method selection UI
+      function updateShippingMethodSelection() {
+        const pickupMethod = document.getElementById("pickup-method");
+        const deliveryMethod = document.getElementById("delivery-method");
+        const deliveryAddress = document.getElementById("delivery-address");
+        const pickupRadio = document.getElementById("pickup");
+        const deliveryRadio = document.getElementById("delivery");
+
+        if (pickupRadio.checked) {
+          pickupMethod.classList.add("selected");
+          deliveryMethod.classList.remove("selected");
+          deliveryAddress.style.display = "none";
+        } else {
+          deliveryMethod.classList.add("selected");
+          pickupMethod.classList.remove("selected");
+          deliveryAddress.style.display = "block";
+        }
+      }
+
       // Cart functionality
       let cart = [];
 
@@ -786,7 +1110,7 @@
         }
 
         // Update add to cart button state
-        if (value <= 0) {
+        if (value <= 0 || !isStoreOpen()) {
           addBtn.disabled = true;
         } else {
           addBtn.disabled = false;
@@ -796,6 +1120,14 @@
       // Quantity controls
       document.querySelectorAll(".quantity-btn").forEach((button) => {
         button.addEventListener("click", function () {
+          // Cek apakah toko buka sebelum mengubah quantity
+          if (!isStoreOpen() && this.classList.contains("plus")) {
+            alert(
+              "Maaf, Farrel Tako sedang tutup. Order jam 16.00 - 18.00 WIB"
+            );
+            return;
+          }
+
           const id = this.getAttribute("data-id");
           const input = document.getElementById(`quantity-${id}`);
           let value = parseInt(input.value);
@@ -814,6 +1146,14 @@
       // Add to cart - TIDAK RESET QUANTITY KE 0
       document.querySelectorAll(".add-to-cart").forEach((button) => {
         button.addEventListener("click", function () {
+          // Cek apakah toko buka sebelum menambahkan ke keranjang
+          if (!isStoreOpen()) {
+            alert(
+              "Maaf, Farrel Tako sedang tutup. Order jam 16.00 - 18.00 WIB"
+            );
+            return;
+          }
+
           const id = this.getAttribute("data-id");
           const name = this.getAttribute("data-name");
           const price = parseInt(this.getAttribute("data-price"));
@@ -858,6 +1198,7 @@
           setTimeout(() => {
             this.innerHTML = '<i class="fas fa-cart-plus me-2"></i>Tambahkan';
             this.classList.remove("btn-success");
+            updateButtonState(id); // Update kembali status tombol
           }, 1000);
         });
       });
@@ -943,12 +1284,29 @@
           return;
         }
 
+        // Validasi apakah toko buka
+        if (!isStoreOpen()) {
+          alert("Maaf, Farrel Tako sedang tutup. Order jam 16.00 - 18.00 WIB");
+          return;
+        }
+
         // Validasi form
         const customerName = document.getElementById("customer-name").value;
         const customerPhone = document.getElementById("customer-phone").value;
+        const shippingMethod = document.querySelector(
+          'input[name="shippingMethod"]:checked'
+        ).value;
+        const customerAddress =
+          document.getElementById("customer-address").value;
 
         if (!customerName || !customerPhone) {
           alert("Harap lengkapi nama dan nomor telepon terlebih dahulu!");
+          return;
+        }
+
+        // Validasi alamat jika memilih pengiriman
+        if (shippingMethod === "delivery" && !customerAddress.trim()) {
+          alert("Harap masukkan alamat lengkap untuk pengiriman!");
           return;
         }
 
@@ -976,13 +1334,19 @@
         message += `Nama: ${customerName}\n`;
         message += `Telepon: ${customerPhone}\n`;
 
+        // Add shipping method info
+        if (shippingMethod === "pickup") {
+          message += `Metode: Ambil di Toko\n`;
+          message += `Alamat Toko: SMA Teuku Umar, jalan karangrejo IX no.99 Semarang Central Java\n`;
+        } else {
+          message += `Metode: Antar ke Alamat\n`;
+          message += `Alamat Pengiriman: ${customerAddress}\n`;
+        }
+
         const customerNote = document.getElementById("customer-note").value;
         if (customerNote) {
           message += `Catatan: ${customerNote}\n`;
         }
-
-        message += `\n*Pengambilan:* Di toko Farrel Tako / Di Sekolah\n`;
-        message += `Alamat Toko: SMA Teuku Umar, jalan karangrejo IX no.99 Semarang Central Java`;
 
         message += "\n\nTerima kasih!";
 
@@ -1007,7 +1371,12 @@
         // Reset form
         document.getElementById("customer-name").value = "";
         document.getElementById("customer-phone").value = "";
+        document.getElementById("customer-address").value = "";
         document.getElementById("customer-note").value = "";
+
+        // Reset shipping method to default
+        document.getElementById("pickup").checked = true;
+        updateShippingMethodSelection();
       });
 
       // Initialize button states
