@@ -561,7 +561,9 @@
                 <div class="menu-overlay-content">
                   <i class="fas fa-clock fa-3x mb-3 text-muted"></i>
                   <h5 class="text-muted">Menu Belum Tersedia</h5>
-                  <p class="text-muted">Order jam 16.00 - 18.00 WIB</p>
+                  <p class="text-muted">
+                    Senin - Jumat Order jam 16.00 - 18.00 WIB
+                  </p>
                 </div>
               </div>
 
@@ -943,13 +945,13 @@
         if (currentHour >= openHour && currentHour < closeHour) {
           // Toko buka (16.00 - 18.00)
           status = "open-now";
-          message = `✅ Farrel Tako sedang BUKA. Order jam ${currentHour}.${currentMinute
+          message = `✅ Farrel Tako sedang BUKA. Senin - Jumat Order jam ${currentHour}.${currentMinute
             .toString()
             .padStart(2, "0")} - 18.00 WIB`;
         } else {
           // Toko tutup
           status = "closed";
-          message = `❌ Farrel Tako sedang TUTUP. Order jam 16.00 - 18.00 WIB`;
+          message = `❌ Farrel Tako sedang TUTUP. Senin - Jumat Order jam 16.00 - 18.00 WIB`;
         }
 
         // Update notifikasi
@@ -1123,7 +1125,7 @@
           // Cek apakah toko buka sebelum mengubah quantity
           if (!isStoreOpen() && this.classList.contains("plus")) {
             alert(
-              "Maaf, Farrel Tako sedang tutup. Order jam 16.00 - 18.00 WIB"
+              "Maaf, Farrel Tako sedang tutup. Senin - Jumat Order jam 16.00 - 18.00 WIB"
             );
             return;
           }
@@ -1149,7 +1151,7 @@
           // Cek apakah toko buka sebelum menambahkan ke keranjang
           if (!isStoreOpen()) {
             alert(
-              "Maaf, Farrel Tako sedang tutup. Order jam 16.00 - 18.00 WIB"
+              "Maaf, Farrel Tako sedang tutup. Senin - Jumat Order jam 16.00 - 18.00 WIB"
             );
             return;
           }
@@ -1286,7 +1288,9 @@
 
         // Validasi apakah toko buka
         if (!isStoreOpen()) {
-          alert("Maaf, Farrel Tako sedang tutup. Order jam 16.00 - 18.00 WIB");
+          alert(
+            "Maaf, Farrel Tako sedang tutup. Senin - Jumat Order jam 16.00 - 18.00 WIB"
+          );
           return;
         }
 
