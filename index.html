@@ -282,82 +282,6 @@
         color: white;
       }
 
-      .cod-btn {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 30px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-      }
-
-      .cod-btn:hover {
-        background-color: var(--secondary-color);
-        transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        color: white;
-      }
-
-      /* Styling untuk form */
-      .form-control:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(211, 84, 0, 0.25);
-      }
-
-      .form-check-input:checked {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-      }
-
-      .shipping-info {
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 15px;
-      }
-
-      /* Informasi toko */
-      .store-info {
-        background-color: #f0f7ff;
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 15px;
-        border-left: 4px solid var(--primary-color);
-      }
-
-      /* Animasi khusus */
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .fade-in-up {
-        animation: fadeInUp 0.8s ease forwards;
-      }
-
-      .delay-1 {
-        animation-delay: 0.2s;
-      }
-
-      .delay-2 {
-        animation-delay: 0.4s;
-      }
-
-      .delay-3 {
-        animation-delay: 0.6s;
-      }
-
       /* Notifikasi jam operasional */
       .operating-hours-notification {
         position: fixed;
@@ -370,10 +294,6 @@
         font-weight: 600;
         animation: slideDown 0.5s ease forwards;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      .operating-hours-notification.open {
-        display: block;
       }
 
       .operating-hours-notification.closed {
@@ -604,7 +524,6 @@
               </div>
             </div>
           </div>
-          <!-- PEMBATAS MENU ITEM-->
         </div>
       </div>
     </section>
@@ -776,9 +695,7 @@
 
           <div class="store-info">
             <h6><i class="fas fa-store me-2"></i>Informasi Pengambilan</h6>
-            <p class="mb-1">
-              <strong>Alamat Farrel Tako:</strong>
-            </p>
+            <p class="mb-1"><strong>Alamat Farrel Tako:</strong></p>
             <p class="mb-2">
               Jl. Kagok Dalam 2 No. 33 Rt 03 Rw 06, Semarang Jawa Tengah, 50525
             </p>
@@ -907,11 +824,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-      // Fungsi untuk mengecek apakah toko sedang buka
+      // Fungsi untuk mengecek hari dan jam operasional
       function isStoreOpen() {
         const now = new Date();
+        const currentDay = now.getDay(); // 0 = Minggu, 1 = Senin, ..., 6 = Sabtu
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
+
+        // Toko hanya buka Senin-Jumat (hari 1-5)
+        if (currentDay === 0 || currentDay === 6) {
+          return false; // Tutup di hari Minggu (0) dan Sabtu (6)
+        }
 
         // Jam operasional: 16.00 - 18.00 WIB
         const openHour = 16; // 16.00 WIB
@@ -925,14 +848,40 @@
         return false;
       }
 
+      // Fungsi untuk mendapatkan nama hari dalam bahasa Indonesia
+      function getDayName(dayNumber) {
+        const days = [
+          "Minggu",
+          "Senin",
+          "Selasa",
+          "Rabu",
+          "Kamis",
+          "Jumat",
+          "Sabtu",
+        ];
+        return days[dayNumber];
+      }
+
+      // Fungsi untuk mendapatkan hari buka berikutnya
+      function getNextOpenDay(currentDay) {
+        // Jika hari Jumat (5) lewat jam operasional, maka buka berikutnya adalah Senin (1)
+        if (currentDay === 5) {
+          return { day: 1, name: "Senin" };
+        }
+        // Jika hari lain, buka besok
+        return { day: currentDay + 1, name: getDayName(currentDay + 1) };
+      }
+
       // Fungsi untuk menampilkan notifikasi jam operasional
       function showOperatingHoursNotification() {
         const notification = document.getElementById(
           "operating-hours-notification"
         );
         const now = new Date();
+        const currentDay = now.getDay();
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
+        const dayName = getDayName(currentDay);
 
         // Jam operasional: 16.00 - 18.00 WIB
         const openHour = 16; // 16.00 WIB
@@ -942,16 +891,34 @@
         let status = "";
 
         // Logika untuk menentukan status toko
-        if (currentHour >= openHour && currentHour < closeHour) {
+        if (currentDay === 0 || currentDay === 6) {
+          // Weekend - Toko tutup
+          status = "closed";
+          message = `❌ Farrel Tako LIBUR di hari ${dayName}. Buka: Senin - Jumat jam 16.00 - 18.00 WIB`;
+        } else if (currentHour >= openHour && currentHour < closeHour) {
           // Toko buka (16.00 - 18.00)
           status = "open-now";
-          message = `✅ Farrel Tako sedang BUKA. Senin - Jumat Order jam ${currentHour}.${currentMinute
+          message = `✅ Farrel Tako sedang BUKA. ${dayName} jam ${currentHour}.${currentMinute
             .toString()
             .padStart(2, "0")} - 18.00 WIB`;
+        } else if (currentHour < openHour) {
+          // Toko akan buka nanti
+          status = "open-soon";
+          const hoursUntilOpen = openHour - currentHour;
+          const minutesUntilOpen = 60 - currentMinute;
+
+          message = `⏰ Farrel Tako akan BUKA ${dayName} jam 16.00 - 18.00 WIB (${hoursUntilOpen} jam ${minutesUntilOpen} menit lagi)`;
         } else {
-          // Toko tutup
+          // Toko sudah tutup hari ini
           status = "closed";
-          message = `❌ Farrel Tako sedang TUTUP. Senin - Jumat Order jam 16.00 - 18.00 WIB`;
+
+          // Cek jika hari Jumat (setelah jam 18:00)
+          if (currentDay === 5) {
+            message = `❌ Farrel Tako sudah TUTUP. Buka Senin - Jumat jam 16.00 - 18.00 WIB`;
+          } else {
+            const nextOpen = getNextOpenDay(currentDay);
+            message = `❌ Farrel Tako sudah TUTUP ${dayName}. Buka ${nextOpen.name} jam 16.00 - 18.00 WIB`;
+          }
         }
 
         // Update notifikasi
@@ -994,6 +961,14 @@
             button.disabled = true;
           }
         });
+
+        // Update tombol checkout
+        const checkoutBtn = document.getElementById("checkout-btn");
+        if (isOpen) {
+          checkoutBtn.disabled = false;
+        } else {
+          checkoutBtn.disabled = true;
+        }
       }
 
       // Panggil fungsi saat halaman dimuat
@@ -1341,7 +1316,7 @@
         // Add shipping method info
         if (shippingMethod === "pickup") {
           message += `Metode: Ambil di Toko\n`;
-          message += `Alamat Toko: SMA Teuku Umar, jalan karangrejo IX no.99 Semarang Central Java\n`;
+          message += `Alamat Toko: Jl. Kagok Dalam 2 No. 33 Rt 03 Rw 06, Semarang Jawa Tengah, 50525\n`;
         } else {
           message += `Metode: Antar ke Alamat\n`;
           message += `Alamat Pengiriman: ${customerAddress}\n`;
